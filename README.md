@@ -63,10 +63,7 @@ steps.sh
 
 - Each scanner is defined as a reusable workflow with `on: workflow_call`.
 - Each domain has an `all-scans.yaml` aggregator that runs all scanners.
-- Aggregators are triggered on:
-  - `push` to `main` (ignoring changes only in `README.md`)
-  - `pull_request` to `main`
-  - manual execution (`workflow_dispatch`)
+- Aggregator workflows are intended to be called from another repository (or another workflow) via `uses:`.
 
 ## Requirements
 
@@ -81,10 +78,10 @@ steps.sh
 
 ## Reusable Workflow Usage
 
-Example usage from another repository:
+### Terraform `all-scans` example
 
 ```yaml
-name: Security Scans
+name: Terraform Security Scans
 
 on:
   pull_request:
@@ -97,11 +94,59 @@ jobs:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/terraform/all-scans.yaml@main
+    with:
+      working-directory: infra/terraform
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 ```
 
-You can also invoke an individual scanner and pass `inputs` (for example `working-directory`, `image_name`, `dockerfile_path`, `context`, depending on the workflow).
+### Kubernetes `all-scans` example
+
+```yaml
+name: Kubernetes Security Scans
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  kubernetes-scans:
+    permissions:
+      contents: read
+      security-events: write
+    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/all-scans.yaml@main
+    with:
+      working-directory: manifests
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+```
+
+### Docker `all-scans` example
+
+```yaml
+name: Docker Security Scans
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  docker-scans:
+    permissions:
+      contents: read
+      security-events: write
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/all-scans.yaml@main
+    with:
+      image_name: my-app
+      dockerfile_path: ./Dockerfile
+      context: .
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+```
+
+You can also invoke an individual scanner workflow and pass only the relevant inputs.
 
 ## Local Execution (Quick Reference)
 

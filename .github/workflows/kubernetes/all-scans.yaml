@@ -1,15 +1,16 @@
 name: K8s scans
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - "README.md"
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "The working directory to scan"
+        type: string
+        required: false
+        default: "manifests"
+    secrets:
+      SNYK_TOKEN:
+        required: true
 
 jobs:
   checkov:
@@ -17,30 +18,47 @@ jobs:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/checkov.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
+
   trivy:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/trivy.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
+
   kube-score:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/kube-score.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
+
   kubescape:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/kubescape.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
+
   kubeaudit:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/kubeaudit.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
+
   snyk:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/snyk.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

@@ -1,36 +1,45 @@
 name: IaC scans
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - "README.md"
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "The directory to scan"
+        type: string
+        required: false
+        default: "."
+    secrets:
+      SNYK_TOKEN:
+        required: true
 
 jobs:
   checkov:
     permissions:
       contents: read
       security-events: write
-    uses: /scan-vulnerabilities/.github/workflows/terraform/checkov.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/terraform/checkov.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
   trivy:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/terraform/trivy.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
   terrascan:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/terraform/terrascan.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
   snyk:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/terraform/snyk.yaml@main
+    with:
+      working-directory: ${{ inputs.working-directory }}
     secrets:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} #APIKEY Neededjagc108
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} # API key required

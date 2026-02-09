@@ -1,36 +1,65 @@
 name: Docker scans
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - "README.md"
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      image_name:
+        description: "The name of the docker image to build"
+        type: string
+        required: false
+        default: "apache"
+      dockerfile_path:
+        description: "The path of the Dockerfile"
+        type: string
+        required: false
+        default: "./Dockerfile"
+      context:
+        description: "The path of the directory used as docker build context"
+        type: string
+        required: false
+        default: "."
+    secrets:
+      SNYK_TOKEN:
+        required: true
 
 jobs:
   checkov:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/checkov.yaml@main 
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/checkov.yaml@main
+    with:
+      image_name: ${{ inputs.image_name }}
+      dockerfile_path: ${{ inputs.dockerfile_path }}
+
   grype:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/docker/grype.yaml@main
+    with:
+      image_name: ${{ inputs.image_name }}
+      dockerfile_path: ${{ inputs.dockerfile_path }}
+      context: ${{ inputs.context }}
+
   snyk:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/docker/snyk.yaml@main
+    with:
+      image_name: ${{ inputs.image_name }}
+      dockerfile_path: ${{ inputs.dockerfile_path }}
+      context: ${{ inputs.context }}
     secrets:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} #APIKEY Needed
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} # API key required
+
   trivy:
     permissions:
       contents: read
       security-events: write
     uses: jagc108/scan-vulnerabilities/.github/workflows/docker/trivy.yaml@main
+    with:
+      image_name: ${{ inputs.image_name }}
+      dockerfile_path: ${{ inputs.dockerfile_path }}
+      context: ${{ inputs.context }}
