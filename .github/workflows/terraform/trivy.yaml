@@ -1,0 +1,53 @@
+name: Trivy Scan
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: 'The directory to run Trivy in'
+        type: string
+        required: false
+        default: '.'
+
+jobs:
+  
+  scan:
+    permissions:
+      contents: read
+      security-events: write      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner in IaC mode show as table
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          hide-progress: false
+          format: 'table'         
+          exit-code: '0'
+          ignore-unfixed: true
+          scan-ref: ${{ inputs.working-directory }}
+
+      - name: Run Trivy vulnerability scanner in IaC mode generate SARIF file
+        uses: aquasecurity/trivy-action@master
+        # continue-on-error: true
+        with:
+          scan-type: 'config'
+          hide-progress: false
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '1'
+          ignore-unfixed: true
+          scan-ref: ${{ inputs.working-directory }}
+          # severity: 'CRITICAL,HIGH'          
+      # - name: Inspect working directory        
+      #   run: ls -la
+
+      # Push the trivy Code results into GitHub Code Scanning tab
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: success() || failure()
+        with:
+          sarif_file: trivy-results.sarif

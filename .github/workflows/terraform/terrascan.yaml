@@ -1,0 +1,46 @@
+name: Terrascan Scan
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "The directory to run Terrascan in"
+        type: string
+        required: false
+        default: "."
+jobs:
+  scan:
+    permissions:
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Run Terrascan
+        id: terrascan
+        # https://github.com/tenable/terrascan-action/
+        uses: tenable/terrascan-action@main
+        # continue-on-error: true
+        with:
+          iac_type: "terraform"
+          iac_version: "v14"
+          policy_type: "aws"
+          # only_warn: true
+          sarif_upload: true
+          #non_recursive:
+          iac_dir: ${{ inputs.working-directory }}
+          #policy_path:
+          #skip_rules:
+          #config_path:
+
+      # - name: Inspect working directory
+      #   run: ls -la
+
+      # Push the terrascan Code results into GitHub Code Scanning tab
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        if: success() || failure()
+        with:
+          sarif_file: terrascan.sarif

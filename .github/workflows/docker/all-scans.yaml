@@ -1,0 +1,36 @@
+name: Docker scans
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  checkov:
+    permissions:
+      contents: read
+      security-events: write
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/checkov.yaml@main 
+  grype:
+    permissions:
+      contents: read
+      security-events: write
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/grype.yaml@main
+  snyk:
+    permissions:
+      contents: read
+      security-events: write
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/snyk.yaml@main
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} #APIKEY Needed
+  trivy:
+    permissions:
+      contents: read
+      security-events: write
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/trivy.yaml@main

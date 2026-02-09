@@ -1,0 +1,36 @@
+name: IaC scans
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  checkov:
+    permissions:
+      contents: read
+      security-events: write
+    uses: /scan-vulnerabilities/.github/workflows/terraform/checkov.yaml@main
+  trivy:
+    permissions:
+      contents: read
+      security-events: write
+    uses: jagc108/scan-vulnerabilities/.github/workflows/terraform/trivy.yaml@main
+  terrascan:
+    permissions:
+      contents: read
+      security-events: write
+    uses: jagc108/scan-vulnerabilities/.github/workflows/terraform/terrascan.yaml@main
+  snyk:
+    permissions:
+      contents: read
+      security-events: write
+    uses: jagc108/scan-vulnerabilities/.github/workflows/terraform/snyk.yaml@main
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }} #APIKEY Neededjagc108

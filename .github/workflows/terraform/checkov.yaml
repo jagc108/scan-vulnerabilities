@@ -1,0 +1,35 @@
+name: Checkov Scan
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "The directory to run Checkov in"
+        type: string
+        required: false
+        default: "."
+jobs:
+  scan:
+    permissions:
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Checkov GitHub Action
+        # https://github.com/bridgecrewio/checkov-action
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: ${{ inputs.working-directory }}
+          output_format: cli,sarif
+          output_file_path: console,results.sarif
+          # soft_fail: true # optional: do not return an error code if there are failed checks
+
+      # Push the checkov Code results into GitHub Code Scanning tab    
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        if: success() || failure()
+        with:
+          sarif_file: results.sarif

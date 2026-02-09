@@ -1,0 +1,41 @@
+name: Snyk Scan
+
+on:
+  workflow_call:
+    secrets:
+      SNYK_TOKEN:
+        required: true
+    inputs:
+      working-directory:
+        description: 'The directory to run Snyk in'
+        type: string
+        required: false
+        default: '.'
+
+jobs:
+  snyk:
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Snyk CLI to check for security issues
+        uses: snyk/actions/setup@cdb760004ba9ea4d525f2e043745dfe85bb9077e
+              
+      # Runs Snyk Infrastructure as Code (IaC) analysis and uploads result to Snyk.
+      - name: Snyk IaC test and report
+        continue-on-error: true
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          snyk iac test --sarif || true
+          # snyk iac test --sarif > snyk-iac.sarif || true          
+          snyk iac test --sarif > snyk-iac.sarif
+
+      # Push the Snyk Code results into GitHub Code Scanning tab
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: success() || failure()
+        with:
+          sarif_file: ${{ inputs.working-directory }}/snyk-iac.sarif
