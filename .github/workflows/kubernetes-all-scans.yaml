@@ -17,7 +17,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/checkov.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes-checkov.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
 
@@ -25,7 +25,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/trivy.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes-trivy.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
 
@@ -33,7 +33,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/kube-score.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes-kube-score.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
 
@@ -41,7 +41,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/kubescape.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes-kubescape.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
 
@@ -49,7 +49,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/kubeaudit.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes-kubeaudit.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
 
@@ -57,7 +57,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/snyk.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes-snyk.yaml@main
     with:
       working-directory: ${{ inputs.working-directory }}
     secrets:

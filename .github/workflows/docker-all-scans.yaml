@@ -27,7 +27,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/checkov.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker-checkov.yaml@main
     with:
       image_name: ${{ inputs.image_name }}
       dockerfile_path: ${{ inputs.dockerfile_path }}
@@ -36,7 +36,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/grype.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker-grype.yaml@main
     with:
       image_name: ${{ inputs.image_name }}
       dockerfile_path: ${{ inputs.dockerfile_path }}
@@ -46,7 +46,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/snyk.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker-snyk.yaml@main
     with:
       image_name: ${{ inputs.image_name }}
       dockerfile_path: ${{ inputs.dockerfile_path }}
@@ -58,7 +58,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/trivy.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker-trivy.yaml@main
     with:
       image_name: ${{ inputs.image_name }}
       dockerfile_path: ${{ inputs.dockerfile_path }}

@@ -13,49 +13,49 @@ Centralize and reuse vulnerability and misconfiguration scanning pipelines (IaC/
 ## Included Tools
 
 ### Docker
-- Checkov (`.github/workflows/docker/checkov.yaml`)
-- Grype (`.github/workflows/docker/grype.yaml`)
-- Snyk (`.github/workflows/docker/snyk.yaml`)
-- Trivy (`.github/workflows/docker/trivy.yaml`)
+- Aggregator: `.github/workflows/docker-all-scans.yaml`
+- Checkov: `.github/workflows/docker-checkov.yaml`
+- Grype: `.github/workflows/docker-grype.yaml`
+- Snyk: `.github/workflows/docker-snyk.yaml`
+- Trivy: `.github/workflows/docker-trivy.yaml`
 
 ### Kubernetes
-- Checkov (`.github/workflows/kubernetes/checkov.yaml`)
-- Kube-score (`.github/workflows/kubernetes/kube-score.yaml`)
-- Kubeaudit (`.github/workflows/kubernetes/kubeaudit.yaml`)
-- Kubescape (`.github/workflows/kubernetes/kubescape.yaml`)
-- Snyk (`.github/workflows/kubernetes/snyk.yaml`)
-- Trivy (`.github/workflows/kubernetes/trivy.yaml`)
+- Aggregator: `.github/workflows/kubernetes-all-scans.yaml`
+- Checkov: `.github/workflows/kubernetes-checkov.yaml`
+- Kube-score: `.github/workflows/kubernetes-kube-score.yaml`
+- Kubeaudit: `.github/workflows/kubernetes-kubeaudit.yaml`
+- Kubescape: `.github/workflows/kubernetes-kubescape.yaml`
+- Snyk: `.github/workflows/kubernetes-snyk.yaml`
+- Trivy: `.github/workflows/kubernetes-trivy.yaml`
 
 ### Terraform
-- Checkov (`.github/workflows/terraform/checkov.yaml`)
-- Snyk (`.github/workflows/terraform/snyk.yaml`)
-- Terrascan (`.github/workflows/terraform/terrascan.yaml`)
-- Trivy (`.github/workflows/terraform/trivy.yaml`)
+- Aggregator: `.github/workflows/terraform-all-scans.yaml`
+- Checkov: `.github/workflows/terraform-checkov.yaml`
+- Snyk: `.github/workflows/terraform-snyk.yaml`
+- Terrascan: `.github/workflows/terraform-terrascan.yaml`
+- Trivy: `.github/workflows/terraform-trivy.yaml`
 
 ## Repository Structure
 
 ```text
 .github/workflows/
-  docker/
-    all-scans.yaml
-    checkov.yaml
-    grype.yaml
-    snyk.yaml
-    trivy.yaml
-  kubernetes/
-    all-scans.yaml
-    checkov.yaml
-    kube-score.yaml
-    kubeaudit.yaml
-    kubescape.yaml
-    snyk.yaml
-    trivy.yaml
-  terraform/
-    all-scans.yaml
-    checkov.yaml
-    snyk.yaml
-    terrascan.yaml
-    trivy.yaml
+  docker-all-scans.yaml
+  docker-checkov.yaml
+  docker-grype.yaml
+  docker-snyk.yaml
+  docker-trivy.yaml
+  kubernetes-all-scans.yaml
+  kubernetes-checkov.yaml
+  kubernetes-kube-score.yaml
+  kubernetes-kubeaudit.yaml
+  kubernetes-kubescape.yaml
+  kubernetes-snyk.yaml
+  kubernetes-trivy.yaml
+  terraform-all-scans.yaml
+  terraform-checkov.yaml
+  terraform-snyk.yaml
+  terraform-terrascan.yaml
+  terraform-trivy.yaml
 steps.sh
 ```
 
@@ -63,6 +63,7 @@ steps.sh
 
 - Each scanner is defined as a reusable workflow with `on: workflow_call`.
 - Each domain has an `all-scans.yaml` aggregator that runs all scanners.
+- Reusable workflows are exposed at the top level of `.github/workflows/` because GitHub does not allow reusable workflow references from subdirectories.
 - Aggregator workflows are intended to be called from another repository (or another workflow) via `uses:`.
 
 ## Requirements
@@ -93,7 +94,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/terraform/all-scans.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/terraform-all-scans.yaml@main
     with:
       working-directory: infra/terraform
     secrets:
@@ -115,7 +116,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes/all-scans.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/kubernetes-all-scans.yaml@main
     with:
       working-directory: manifests
     secrets:
@@ -137,7 +138,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    uses: jagc108/scan-vulnerabilities/.github/workflows/docker/all-scans.yaml@main
+    uses: jagc108/scan-vulnerabilities/.github/workflows/docker-all-scans.yaml@main
     with:
       image_name: my-app
       dockerfile_path: ./Dockerfile
