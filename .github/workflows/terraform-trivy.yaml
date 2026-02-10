@@ -10,8 +10,7 @@ on:
         default: '.'
 
 jobs:
-  
-  scan:
+  trivy:
     permissions:
       contents: read
       security-events: write      

@@ -9,7 +9,7 @@ on:
         required: false
         default: "."
 jobs:
-  scan:
+  checkov:
     permissions:
       contents: read
       security-events: write

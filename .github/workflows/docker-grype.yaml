@@ -22,8 +22,7 @@ on:
         default: '.'     
 
 jobs:
-  
-  scan:
+  grype:
     permissions:
       contents: read
       security-events: write      

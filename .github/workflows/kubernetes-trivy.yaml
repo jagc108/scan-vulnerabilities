@@ -10,8 +10,7 @@ on:
             default: 'manifests'
 
 jobs:
-  
-  scan:
+  trivy:
     permissions:
       contents: read
       security-events: write      

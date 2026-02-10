@@ -10,7 +10,7 @@ on:
         default: 'manifests'
 
 jobs:
-  scan:
+  kube-score:
     permissions:
       contents: read
       security-events: write

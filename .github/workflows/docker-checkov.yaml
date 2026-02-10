@@ -15,7 +15,7 @@ on:
         default: 'Dockerfile'
 
 jobs:
-  scan:
+  checkov:
     permissions:
       contents: read
       security-events: write
