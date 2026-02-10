@@ -29,7 +29,7 @@ jobs:
           kube-score score ${{ inputs.working-directory }}/*.yaml --output-format sarif || true
           kube-score score ${{ inputs.working-directory }}/*.yaml --output-format sarif > results.sarif
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v4
         if: success() || failure()
         with:
           sarif_file: results.sarif
